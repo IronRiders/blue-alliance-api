@@ -11,11 +11,11 @@ public class Events extends TBAClient {
 
     private static Events _instance = new Events();
 
-    public static Events getInstance() {
-        return _instance;
+    private Events() {
     }
 
-    private Events() {
+    public static Events getInstance() {
+        return _instance;
     }
 
     /**
@@ -27,9 +27,10 @@ public class Events extends TBAClient {
      *
      * @see com.thebluealliance.api.model.v2.Event
      */
-    public Event[] getAll(int year) {
-        return (Event[]) mapData(fetchData("events/" + year), Event[].class);
+    public Event[] getAllEvents(int year) {
+        return (Event[]) mapData(fetchJSON("events/" + year), Event[].class);
     }
+
     /**
      * Get a specific event by its key
      *
@@ -39,8 +40,8 @@ public class Events extends TBAClient {
      *
      * @see com.thebluealliance.api.model.v2.Event
      */
-    public Event get(String eventKey) {
-        return (Event) mapData(fetchData("event/" + eventKey), Event.class);
+    public Event getEvent(String eventKey) {
+        return (Event) mapData(fetchJSON("event/" + eventKey), Event.class);
     }
 
     /**
@@ -53,7 +54,7 @@ public class Events extends TBAClient {
      * @see com.thebluealliance.api.model.v2.Team
      */
     public Team[] getTeams(String eventKey) {
-        return (Team[]) mapData(fetchData("event/" + eventKey + "/teams"), Team[].class);
+        return (Team[]) mapData(fetchJSON("event/" + eventKey + "/teams"), Team[].class);
     }
 
     /**
@@ -66,6 +67,6 @@ public class Events extends TBAClient {
      * @see com.thebluealliance.api.model.v2.Match
      */
     public Match[] getMatches(String eventKey) {
-        return (Match[]) mapData(fetchData("event/" + eventKey + "/matches"), Match[].class);
+        return (Match[]) mapData(fetchJSON("event/" + eventKey + "/matches"), Match[].class);
     }
 }

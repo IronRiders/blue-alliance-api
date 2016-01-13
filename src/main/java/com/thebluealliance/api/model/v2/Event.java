@@ -3,30 +3,30 @@ package com.thebluealliance.api.model.v2;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO: Implement Awards and Webcast
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event  {
+public class Event {
 
-    private String key;
-    private String name;
-    private String short_name;
-    private String event_code;
-    private String event_type_string;
-    private int event_type;
-    private String event_district_string;
-    private int event_district;
-    private int year;
-    private String location;
-    private String venue_address;
-    private String website;
-    private boolean official;
-    private Team[] teams;
-    private Match[] matches;
+    // TODO: Implement Awards and Webcast
+
+    private String     key;
+    private String     name;
+    private String     short_name;
+    private String     event_code;
+    private String     event_type_string;
+    private int        event_type;
+    private String     event_district_string;
+    private int        event_district;
+    private int        year;
+    private String     location;
+    private String     venue_address;
+    private String     website;
+    private boolean    official;
+    private Team[]     teams;
+    private Match[]    matches;
     //private Award[] awards;
     //private Webcast[] webcast; // type, channel
     private Alliance[] alliances;
-    private String district_points;
+    private String     district_points;
 
     public Event() {
     }

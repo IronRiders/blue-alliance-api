@@ -3,33 +3,31 @@ package com.thebluealliance.api.model.v2;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO: Implement AllianceScore and ScoreBreakdown
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Match {
 
-    private String key;
-    private String comp_level;
-    private String set_number;
-    private String match_number;
-    //private Alliance[] alliances;
-    //private String score_breakdown;
-    private String event_key;
+    private String  key;
+    private String  comp_level;
+    private String  set_number;
+    private String  match_number;
+    private MatchAlliances alliances;
+    private ScoreBreakdown score_breakdown;
+    private String  event_key;
     private Video[] videos;
-    private String time_string;
-    private long time;
+    private String  time_string;
+    private long    time;
 
-    /*
+
     @JsonProperty("alliances")
-    public Alliance[] getAlliances() {
+    public MatchAlliances getAlliances() {
         return alliances;
     }
 
     @JsonProperty("alliances")
-    public void setAlliances(Alliance[] alliances) {
+    public void setAlliances(MatchAlliances alliances) {
         this.alliances = alliances;
     }
-    */
+
     @JsonProperty("comp_level")
     public String getCompLevel() {
         return comp_level;
@@ -69,17 +67,18 @@ public class Match {
     public void setMatchNumber(String match_number) {
         this.match_number = match_number;
     }
-    /*
+
+
     @JsonProperty("score_breakdown")
-    public String getScoreBreakdown() {
+    public ScoreBreakdown getScoreBreakdown() {
         return score_breakdown;
     }
 
     @JsonProperty("score_breakdown")
-    public void setScoreBreakdown(String score_breakdown) {
+    public void setScoreBreakdown(ScoreBreakdown score_breakdown) {
         this.score_breakdown = score_breakdown;
     }
-    */
+
     @JsonProperty("set_number")
     public String getSetNumber() {
         return set_number;
@@ -118,5 +117,9 @@ public class Match {
     @JsonProperty("videos")
     public void setVideos(Video[] videos) {
         this.videos = videos;
+    }
+
+    public String toString() {
+        return getKey();
     }
 }

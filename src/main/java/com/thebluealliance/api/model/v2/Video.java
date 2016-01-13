@@ -1,7 +1,9 @@
 package com.thebluealliance.api.model.v2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Video {
 
     private String key;

@@ -10,10 +10,10 @@ public class Team {
     private String region;
     private String country_name;
     private String location;
-    private int team_number;
+    private int    team_number;
     private String key;
     private String nickname;
-    private int rookie_year;
+    private int    rookie_year;
     private String motto;
 
     public Team() {

@@ -5,41 +5,76 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Properties;
 
 public abstract class TBAClient {
 
-    private static final String _url = "http://www.thebluealliance.com/api/v2/";
+    private static final Properties PROPERTIES = System.getProperties();
 
-    private final Logger logger = LogManager.getLogger(TBAClient.class);
+    private static Logger logger = LogManager.getLogger(TBAClient.class);
 
-    protected String fetchData(String endpoint) {
+    static {
+        logger.trace("Loading properties file...");
+        InputStream propertyFile = TBAClient.class.getClassLoader().getResourceAsStream("blue-alliance-api.properties");
+
+        try {
+            PROPERTIES.load(propertyFile);
+            propertyFile.close();
+            logger.debug(PROPERTIES);
+        }
+        catch (IOException e) {
+            logger.fatal("Failed to load properties file", e);
+        }
+    }
+
+    /**
+     * Fetch JSON from the given URL
+     *
+     * @param endpoint
+     *
+     * @return String containing the serialized JSON data relieved
+     */
+    protected String fetchJSON(String endpoint) {
         String url = getURL(endpoint);
-        logger.debug(url);
+
+        logger.debug(String.format("Fetching JSON from %s", url));
 
         StringBuilder json = new StringBuilder();
 
         try {
-            Reader r = getReader(getConnection(url));
+            Reader r = new InputStreamReader(getConnection(url).getInputStream());
             char c;
             while ((c = (char) r.read()) != '\uFFFF') {
                 json.append(c);
             }
-            logger.debug(json);
-        } catch (IOException e) {
-            logger.fatal(e);
+            logger.debug(String.format("Received JSON: %s", json));
+        }
+        catch (IOException e) {
+            logger.fatal("Error while retrieving JSON", e);
         }
 
         return json.toString();
     }
 
+    /**
+     * Maps JSON contained in the given String to the given class
+     *
+     * @param json  serialized JSON data
+     * @param clazz Class to map serialized JSON data to
+     *
+     * @return instance of clazz containing data from the serialized JSON
+     */
     protected Object mapData(String json, Class clazz) {
         ObjectMapper mapper = new ObjectMapper();
         Object data = null;
+
+        logger.debug(String.format("Mapping JSON data to %s", clazz.getName()));
 
         try {
             if (clazz.isArray()) {
@@ -50,26 +85,40 @@ public abstract class TBAClient {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to map JSON", e);
         }
+
+        logger.debug(String.format("Mapped JSON: %s", data));
+
         return data;
     }
 
+    /**
+     * Gets the complete URL to retrieve JSON data from
+     *
+     * @param append URL part that should be appended to the URL from tba.url property
+     *
+     * @return Complete URL to retrieve JSON data from
+     */
     protected String getURL(String append) {
-        return _url + append;
+        return PROPERTIES.getProperty("tba.url") + append;
     }
 
-    protected URLConnection getConnection(String url) throws IOException {
+    /**
+     * Gets the URLConnection object to establish a connection to the API. Headers required by the API are also
+     * specified here. tba.appid and tba.useragent are placed into X-TBA-App-Id and User-Agent headers, respectively.
+     *
+     * @param url String URL
+     *
+     * @return
+     *
+     * @throws IOException
+     */
+    private URLConnection getConnection(String url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
-        urlConnection.addRequestProperty("X-TBA-App-Id", "frc4180:blue-alliance-api:1.0-SNAPSHOT");
-        // TODO: Cloudflare Blocks Java/ UA, create one based on app id?
-        urlConnection.addRequestProperty("User-Agent", "intellij/1.0");
+        urlConnection.addRequestProperty("X-TBA-App-Id", PROPERTIES.getProperty("tba.appid"));
+        // Cloudflare Blocks Java/* User Agent, so use one based on the App-Id
+        urlConnection.addRequestProperty("User-Agent", PROPERTIES.getProperty("tba.useragent"));
         return urlConnection;
     }
-
-    protected Reader getReader(URLConnection urlConnection) throws IOException {
-        return new InputStreamReader(urlConnection.getInputStream());
-    }
-
-
 }
