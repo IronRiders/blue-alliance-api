@@ -1,8 +1,9 @@
 package com.thebluealliance.api.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,7 @@ public abstract class TBAClient {
 
     private static final Properties PROPERTIES = System.getProperties();
 
-    private static Logger logger = LogManager.getLogger(TBAClient.class);
+    private static Logger logger = LoggerFactory.getLogger(TBAClient.class);
 
     static {
         logger.trace("Loading properties file...");
@@ -26,10 +27,10 @@ public abstract class TBAClient {
         try {
             PROPERTIES.load(propertyFile);
             propertyFile.close();
-            logger.debug(PROPERTIES);
+            logger.debug(PROPERTIES.toString());
         }
         catch (IOException e) {
-            logger.fatal("Failed to load properties file", e);
+            logger.error("Failed to load properties file", e);
         }
     }
 
@@ -56,7 +57,7 @@ public abstract class TBAClient {
             logger.debug(String.format("Received JSON: %s", json));
         }
         catch (IOException e) {
-            logger.fatal("Error while retrieving JSON", e);
+            logger.error("Error while retrieving JSON", e);
         }
 
         return json.toString();
